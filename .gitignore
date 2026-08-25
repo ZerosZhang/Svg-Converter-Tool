@@ -1,0 +1,16 @@
+# .NET build outputs
+bin/
+obj/
+
+# Visual Studio / IDE
+.vs/
+*.user
+*.suo
+
+# 应用运行输出
+Output/
+
+# 其他
+*.log
+Thumbs.db
+Desktop.ini

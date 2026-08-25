@@ -1,0 +1,72 @@
+name: Bug 报告 / 功能请求
+description: 报告使用问题或提出新功能建议
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: 问题类型
+      options:
+        - Bug 报告
+        - 功能请求
+        - 其他
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 描述
+      description: 请简要描述你遇到的问题或想要的功能
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 如何复现该问题（Bug 报告请填写）
+      placeholder: |
+        1. 打开程序
+        2. 选择 SVG 文件
+        3. 点击转换
+        4. 出现异常
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望行为
+      description: 你期望发生的结果
+      placeholder: 例如：应正常生成 .xaml 文件
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际行为
+      description: 实际发生的结果
+      placeholder: 例如：点击转换后程序无响应
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: 使用的安装包
+      description: 你运行的是哪种版本
+      options:
+        - 自包含版（portable，免运行时）
+        - 框架依赖版（framework-dependent）
+        - 源码自行编译
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: 操作系统
+      placeholder: 例如：Windows 11 23H2
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: 补充信息
+      description: 错误日志、截图、示例 SVG 文件等有助于定位问题的信息

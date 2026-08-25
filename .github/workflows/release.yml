@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish (win-x64 self-contained)
+        run: dotnet publish src/SvgConverterTool/SvgConverterTool.csproj -c Release -r win-x64 --self-contained true -o publish/self-contained
+
+      - name: Publish (win-x64 framework-dependent)
+        run: dotnet publish src/SvgConverterTool/SvgConverterTool.csproj -c Release -r win-x64 --self-contained false -o publish/framework-dependent
+
+      - name: Package portable zip
+        shell: pwsh
+        run: |
+          Compress-Archive -Path publish/self-contained/* -DestinationPath SvgConverterTool-win-x64-portable.zip
+          Compress-Archive -Path publish/framework-dependent/* -DestinationPath SvgConverterTool-win-x64-framework-dependent.zip
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            SvgConverterTool-win-x64-portable.zip
+            SvgConverterTool-win-x64-framework-dependent.zip
+          generate_release_notes: true
