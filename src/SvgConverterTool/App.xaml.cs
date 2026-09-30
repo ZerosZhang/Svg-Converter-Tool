@@ -15,9 +15,9 @@ public partial class App : Application
 
         string baseDir = AppDomain.CurrentDomain.BaseDirectory;
         string icoPath = Path.Combine(baseDir, "app.ico");
-        string svgPath = Path.Combine(baseDir, "External", "file-svg.svg");
+        string svgPath = Path.Combine(baseDir, "External", "icon.svg");
 
-        // 如果 app.ico 不存在但 file-svg.svg 存在，则自动生成图标
+        // 如果 app.ico 不存在但 icon.svg 存在，则自动生成图标
         if (!File.Exists(icoPath) && File.Exists(svgPath))
         {
             try

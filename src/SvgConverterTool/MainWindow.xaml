@@ -85,7 +85,7 @@
 
                 <!-- 底部信息 -->
                 <Border Grid.Row="2" VerticalAlignment="Bottom" Padding="16,12" BorderBrush="#3C3C3C" BorderThickness="0,1,0,0">
-                    <TextBlock Text="v1.1.3" Foreground="#666666" FontSize="11" HorizontalAlignment="Center"/>
+                    <TextBlock x:Name="TextVersion" Foreground="#666666" FontSize="11" HorizontalAlignment="Center"/>
                 </Border>
             </Grid>
         </Border>

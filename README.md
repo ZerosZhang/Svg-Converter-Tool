@@ -201,7 +201,7 @@ SvgConverterTool/
 │   ├── SvgConvertView.xaml / .cs   ← SVG 转 XAML 页面
 │   └── IcoConvertView.xaml / .cs   ← SVG 转 ICO 页面
 ├── External/
-│   └── file-svg.svg                ← 程序图标源文件
+│   └── icon.svg                    ← 程序图标源文件
 ├── app.ico                         ← 程序图标
 └── SvgConverterTool.csproj
 ```

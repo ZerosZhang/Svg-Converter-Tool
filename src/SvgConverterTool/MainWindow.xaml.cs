@@ -13,6 +13,8 @@ namespace SvgConverterTool
         public MainWindow()
         {
             InitializeComponent();
+            // 版本号取自程序集，避免与 csproj 中的 Version 不一致
+            TextVersion.Text = $"v{typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.0.0"}";
             // 默认选中第一个导航按钮
             SetActiveNavButton(NavSvgConvert);
         }
