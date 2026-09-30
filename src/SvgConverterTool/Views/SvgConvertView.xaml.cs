@@ -297,7 +297,7 @@ namespace SvgConverterTool.Views
         }
 
         /// <summary>
-        /// 处理XAML格式：去掉双层DrawingGroup、去掉Name和xmlns、包装成纯净的DrawingImage
+        /// 处理XAML格式：去掉双层DrawingGroup、去掉Name和xmlns、强制裁剪到1024画布、包装成纯净的DrawingImage
         /// </summary>
         private string ProcessXamlFormat(string tempXamlPath, string fileName)
         {
@@ -335,6 +335,13 @@ namespace SvgConverterTool.Views
 
             // 去掉 x:Name 属性
             targetDrawingGroup.Attribute(xNs + "Name")?.Remove();
+
+            // 统一为 1024 画布：去掉缩放变换，改用固定裁剪区域
+            targetDrawingGroup.Element(ns + "DrawingGroup.Transform")?.Remove();
+            targetDrawingGroup.Element(ns + "DrawingGroup.ClipGeometry")?.Remove();
+            targetDrawingGroup.AddFirst(
+                new XElement(ns + "DrawingGroup.ClipGeometry",
+                    new XElement(ns + "RectangleGeometry", new XAttribute("Rect", "0,0,1024,1024"))));
 
             // 获取 DrawingGroup 的XML字符串
             string dgXml = targetDrawingGroup.ToString(SaveOptions.None);
