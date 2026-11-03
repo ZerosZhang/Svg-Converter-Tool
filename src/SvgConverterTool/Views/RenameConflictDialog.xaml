@@ -1,0 +1,87 @@
+<Window x:Class="SvgConverterTool.Views.RenameConflictDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="名称已存在" SizeToContent="WidthAndHeight"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize" ShowInTaskbar="False" Background="#FFF0F0F0">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#F5F5F5"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14,6"/>
+            <Setter Property="Margin" Value="8,0,0,0"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E8E8E8"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#D0D0D0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Border Padding="20">
+        <StackPanel Width="380">
+            <TextBlock Text="名称已存在" FontSize="14" FontWeight="SemiBold" Foreground="#333"/>
+            <TextBlock x:Name="TxtMessage" Margin="0,8,0,0"
+                       TextWrapping="Wrap" FontSize="12" Foreground="#666"/>
+
+            <Grid Margin="0,16,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="当前图标" HorizontalAlignment="Center"
+                               FontSize="12" Foreground="#666"/>
+                    <Border Width="140" Height="140" Margin="0,8,0,0"
+                            Background="#FAFAFA" BorderBrush="#EEEEEE" BorderThickness="1" CornerRadius="8">
+                        <Grid>
+                            <Image x:Name="ImgCurrent" Width="116" Height="116" Stretch="Uniform"/>
+                            <TextBlock x:Name="TxtNoCurrent" Text="无预览" Visibility="Collapsed"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       FontSize="12" Foreground="#999"/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="已存在" HorizontalAlignment="Center"
+                               FontSize="12" Foreground="#666"/>
+                    <Border Width="140" Height="140" Margin="0,8,0,0"
+                            Background="#FAFAFA" BorderBrush="#EEEEEE" BorderThickness="1" CornerRadius="8">
+                        <Grid>
+                            <Image x:Name="ImgExisting" Width="116" Height="116" Stretch="Uniform"/>
+                            <TextBlock x:Name="TxtNoExisting" Text="无预览" Visibility="Collapsed"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       FontSize="12" Foreground="#999"/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0">
+                <Button Content="覆盖" Click="Overwrite_Click"/>
+                <Button Content="添加后缀" Click="AddSuffix_Click"/>
+                <Button Content="重新命名" Click="Retry_Click"/>
+                <Button Content="取消" Click="Cancel_Click"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

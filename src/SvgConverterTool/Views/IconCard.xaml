@@ -1,0 +1,69 @@
+<UserControl x:Class="SvgConverterTool.Views.IconCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="170" d:DesignWidth="230">
+    <Border MinWidth="210" MaxWidth="280" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8"
+            Margin="8" Padding="14" Background="White"
+            Cursor="Hand" MouseLeftButtonUp="Card_MouseLeftButtonUp"
+            ToolTip="{Binding FileName}">
+        <Grid HorizontalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                <Border BorderBrush="#F0F0F0" BorderThickness="1" Background="#FAFAFA"
+                        Width="104" Height="104" CornerRadius="8">
+                    <Image Source="{Binding PreviewImage}"
+                           Width="84" Height="84" Stretch="Uniform"/>
+                </Border>
+                <Grid Width="104" Height="22" Margin="0,8,0,0">
+                    <TextBlock Text="{Binding FileName}"
+                               TextTrimming="CharacterEllipsis"
+                               TextAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               Foreground="#333"
+                               Cursor="IBeam"
+                               ToolTip="点击重命名"
+                               MouseLeftButtonUp="FileName_MouseLeftButtonUp"/>
+                    <TextBox x:Name="TxtRename"
+                             Visibility="Collapsed"
+                             FontSize="12"
+                             TextAlignment="Center"
+                             VerticalContentAlignment="Center"
+                             BorderBrush="#90CAF9" BorderThickness="1"
+                             Padding="2,0"
+                             KeyDown="RenameBox_KeyDown"
+                             LostFocus="RenameBox_LostFocus"/>
+                </Grid>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+                <Button Content="XAML" Style="{StaticResource FormatButtonStyle}"
+                        Background="#EAF2FE" Foreground="#1D6FE0"
+                        Tag="{Binding XamlPath}" IsEnabled="{Binding HasXaml}"
+                        ToolTip="复制 XAML 文本"
+                        Click="BtnCopyFormat_Click"/>
+                <Button Content="SVG" Style="{StaticResource FormatButtonStyle}"
+                        Background="#FFF1E6" Foreground="#E5722F"
+                        Tag="{Binding SvgPath}" IsEnabled="{Binding HasSvg}"
+                        ToolTip="复制 SVG 文件"
+                        Click="BtnCopyFormat_Click"/>
+                <Button Content="PNG" Style="{StaticResource FormatButtonStyle}"
+                        Background="#EAF7EC" Foreground="#2E9E4F"
+                        Tag="{Binding PngPath}" IsEnabled="{Binding HasPng}"
+                        ToolTip="复制 PNG 图片"
+                        Click="BtnCopyFormat_Click"/>
+                <Button Content="ICO" Style="{StaticResource FormatButtonStyle}"
+                        Background="#F4EDFB" Foreground="#7A4FC0"
+                        Tag="{Binding IcoPath}" IsEnabled="{Binding HasIco}"
+                        ToolTip="复制 ICO 文件"
+                        Click="BtnCopyFormat_Click"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

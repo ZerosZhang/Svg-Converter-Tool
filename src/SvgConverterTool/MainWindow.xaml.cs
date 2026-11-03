@@ -31,7 +31,8 @@ namespace SvgConverterTool
             string tag = btn.Tag?.ToString() ?? string.Empty;
             ContentArea.Content = tag switch
             {
-                "IcoConvert" => new IcoConvertView(),
+                "Search" => new SearchView(),
+                "Manage" => new ManageView(),
                 _ => new SvgConvertView()
             };
         }
@@ -43,7 +44,8 @@ namespace SvgConverterTool
         {
             // 重置所有导航按钮样式
             ResetNavButtonStyle(NavSvgConvert);
-            ResetNavButtonStyle(NavIcoConvert);
+            ResetNavButtonStyle(NavSearch);
+            ResetNavButtonStyle(NavManage);
 
             // 设置激活状态
             activeButton.Background = new SolidColorBrush(Color.FromRgb(59, 130, 246)); // #3B82F6

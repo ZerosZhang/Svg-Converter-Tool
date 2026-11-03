@@ -1,10 +1,10 @@
 using Microsoft.Win32;
 using SharpVectors.Converters;
 using SharpVectors.Renderers.Wpf;
+using SvgConverterTool.Helpers;
 using SvgConverterTool.Models;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,49 +23,20 @@ namespace SvgConverterTool.Views
     /// </summary>
     public partial class SvgConvertView : UserControl
     {
-        private readonly ObservableCollection<SvgConvertResult> _results = new();
+        private readonly ObservableCollection<IconItem> _results = new();
         private readonly string _outputDirectory;
 
         public SvgConvertView()
         {
             InitializeComponent();
             ItemsResults.ItemsSource = _results;
-            Loaded += (_, _) => UpdateGridColumns();
-            ItemsResults.SizeChanged += (_, _) => UpdateGridColumns();
+            CardGridLayout.Attach(ItemsResults);
 
             _outputDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Output");
             if (!Directory.Exists(_outputDirectory))
             {
                 Directory.CreateDirectory(_outputDirectory);
             }
-        }
-
-        /// <summary>
-        /// 根据容器宽度动态计算UniformGrid列数
-        /// </summary>
-        private void UpdateGridColumns()
-        {
-            var grid = FindUniformGrid(ItemsResults);
-            if (grid == null) return;
-            double availableWidth = ItemsResults.ActualWidth;
-            const double itemMinWidth = 152; // 自适应最小参考宽度
-            int columns = Math.Max(1, (int)(availableWidth / itemMinWidth));
-            grid.Columns = columns;
-        }
-
-        /// <summary>
-        /// 在可视化树中查找UniformGrid
-        /// </summary>
-        private static UniformGrid? FindUniformGrid(DependencyObject parent)
-        {
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
-            {
-                var child = VisualTreeHelper.GetChild(parent, i);
-                if (child is UniformGrid grid) return grid;
-                var result = FindUniformGrid(child);
-                if (result != null) return result;
-            }
-            return null;
         }
 
         /// <summary>
@@ -134,32 +105,13 @@ namespace SvgConverterTool.Views
 
             BtnSelectFiles.IsEnabled = true;
             ProgressContainer.Visibility = Visibility.Collapsed;
-            TxtStatus.Text = $"转换完成：成功 {successCount} 个，失败 {failCount} 个。输出目录: {_outputDirectory}";
-        }
-
-        /// <summary>
-        /// 打开输出目录按钮点击事件
-        /// </summary>
-        private void BtnOpenOutput_Click(object sender, RoutedEventArgs e)
-        {
-            if (Directory.Exists(_outputDirectory))
-            {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = _outputDirectory,
-                    UseShellExecute = true
-                });
-            }
-            else
-            {
-                MessageBox.Show("输出目录不存在。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+            TxtStatus.Text = $"转换完成：成功 {successCount} 个，失败 {failCount} 个。可在「管理」页打开输出目录";
         }
 
         /// <summary>
         /// 转换单个SVG文件
         /// </summary>
-        private SvgConvertResult? ConvertSingleFile(string svgPath)
+        private IconItem? ConvertSingleFile(string svgPath)
         {
             string fileName = Path.GetFileNameWithoutExtension(svgPath);
             string xamlOutputPath = Path.Combine(_outputDirectory, $"{fileName}.xaml");
@@ -204,14 +156,16 @@ namespace SvgConverterTool.Views
                 var drawingImage = new DrawingImage(drawingGroup);
                 drawingImage.Freeze(); // 冻结以提高性能并允许跨线程使用
 
-                return new SvgConvertResult
+                return new IconItem
                 {
                     FileName = fileName,
-                    FullPath = svgPath,
+                    SourcePath = svgPath,
                     XamlCode = finalXaml,
                     PreviewImage = drawingImage,
-                    XamlOutputPath = xamlOutputPath,
-                    PngOutputPath = pngOutputPath
+                    XamlPath = xamlOutputPath,
+                    PngPath = pngOutputPath,
+                    SvgPath = svgOutputPath,
+                    IcoPath = icoOutputPath
                 };
             }
             finally
@@ -362,42 +316,11 @@ namespace SvgConverterTool.Views
         }
 
         /// <summary>
-        /// 复制XAML按钮点击事件
+        /// 卡片复制或重命名后的状态提示
         /// </summary>
-        private void BtnCopy_Click(object sender, RoutedEventArgs e)
+        private void IconCard_Message(object? sender, IconMessageEventArgs e)
         {
-            if (sender is Button btn && btn.DataContext is SvgConvertResult result)
-            {
-                CopyXamlToClipboard(result);
-            }
-            e.Handled = true;
-        }
-
-        /// <summary>
-        /// 点击整个图标卡片复制XAML
-        /// </summary>
-        private void ItemBorder_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is Border border && border.DataContext is SvgConvertResult result)
-            {
-                CopyXamlToClipboard(result);
-            }
-        }
-
-        /// <summary>
-        /// 复制XAML代码到剪贴板
-        /// </summary>
-        private void CopyXamlToClipboard(SvgConvertResult result)
-        {
-            try
-            {
-                Clipboard.SetText(result.XamlCode);
-                TxtStatus.Text = $"已复制 [{result.FileName}] 的XAML代码到剪贴板";
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"复制失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            TxtStatus.Text = e.Text;
         }
     }
 }

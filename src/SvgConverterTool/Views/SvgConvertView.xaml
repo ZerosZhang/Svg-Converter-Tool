@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:views="clr-namespace:SvgConverterTool.Views"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
     <Grid>
@@ -51,8 +52,6 @@
                     </StackPanel.Resources>
                     <Button x:Name="BtnSelectFiles" Content="📁 选择 SVG 文件" Padding="12,6" Margin="0,0,10,0"
                             Click="BtnSelectFiles_Click" FontSize="13"/>
-                    <Button x:Name="BtnOpenOutput" Content="📂 打开输出目录" Padding="12,6" Margin="0,0,10,0"
-                            Click="BtnOpenOutput_Click" FontSize="13"/>
                 </StackPanel>
                 <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
                     <Grid Width="220" Height="20" Margin="0,0,10,0" x:Name="ProgressContainer" Visibility="Collapsed">
@@ -66,7 +65,7 @@
 
         <!-- 提示信息 -->
         <Border Grid.Row="1" Background="#E3F2FD" BorderBrush="#90CAF9" BorderThickness="0,0,0,1" Padding="10">
-            <TextBlock Text="💡 点击图标或【复制XAML】按钮即可将XAML代码复制到剪贴板" 
+            <TextBlock Text="💡 点击卡片复制 XAML 代码，或用右侧按钮复制对应格式；点击文件名可重命名" 
                        Foreground="#1565C0" FontSize="12"/>
         </Border>
 
@@ -80,53 +79,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderBrush="#DDD" BorderThickness="1" CornerRadius="6" 
-                                Margin="8" Padding="12" MinWidth="120" MaxWidth="160" HorizontalAlignment="Stretch" Background="White"
-                                Cursor="Hand" MouseLeftButtonUp="ItemBorder_MouseLeftButtonUp"
-                                ToolTip="{Binding FileName}">
-                            <Border.Effect>
-                                <DropShadowEffect ShadowDepth="1" BlurRadius="4" Opacity="0.15"/>
-                            </Border.Effect>
-                            <StackPanel>
-                                <Border BorderBrush="#EEE" BorderThickness="1" Background="#FAFAFA" 
-                                        Width="100" Height="100" CornerRadius="4">
-                                    <Image Source="{Binding PreviewImage}" 
-                                           Width="80" Height="80" Stretch="Uniform"/>
-                                </Border>
-                                <TextBlock Text="{Binding FileName}" 
-                                           TextTrimming="CharacterEllipsis"
-                                           TextAlignment="Center"
-                                           FontSize="12"
-                                           Margin="0,8,0,0"
-                                           Foreground="#333"/>
-                                <Button Content="📋 复制XAML" 
-                                        Margin="0,8,0,0" Padding="6,4"
-                                        FontSize="11"
-                                        Click="BtnCopy_Click"
-                                        Background="#2196F3" Foreground="White" BorderThickness="0">
-                                    <Button.Style>
-                                        <Style TargetType="Button">
-                                            <Setter Property="Background" Value="#2196F3"/>
-                                            <Setter Property="Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate TargetType="Button">
-                                                        <Border Background="{TemplateBinding Background}" 
-                                                                CornerRadius="4" Padding="{TemplateBinding Padding}">
-                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                        </Border>
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Style.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#1976D2"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
-                            </StackPanel>
-                        </Border>
+                        <views:IconCard Message="IconCard_Message"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

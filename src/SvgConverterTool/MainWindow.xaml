@@ -5,9 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:SvgConverterTool.Views"
         mc:Ignorable="d"
-        Title="SVG 工具箱" Height="720" Width="1100"
+        Title="SVG 工具箱" Height="860" Width="1200"
         WindowStartupLocation="CenterScreen"
         Background="#FFF0F0F0"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
         Icon="app.ico">
     <Window.Resources>
         <Style x:Key="NavButtonStyle" TargetType="Button">
@@ -68,17 +72,27 @@
                             Click="NavButton_Click">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="🔄" Margin="0,0,10,0" FontSize="14"/>
-                            <TextBlock Text="SVG 转 XAML" VerticalAlignment="Center"/>
+                            <TextBlock Text="转换" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
-                    <Button x:Name="NavIcoConvert" Tag="IcoConvert"
+                    <Button x:Name="NavSearch" Tag="Search"
                             Style="{StaticResource NavButtonStyle}"
                             Padding="14,10" Margin="0,2" FontSize="13"
                             HorizontalContentAlignment="Left"
                             Click="NavButton_Click">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="🎯" Margin="0,0,10,0" FontSize="14"/>
-                            <TextBlock Text="SVG 转 ICO" VerticalAlignment="Center"/>
+                            <TextBlock Text="🔍" Margin="0,0,10,0" FontSize="14"/>
+                            <TextBlock Text="搜索" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="NavManage" Tag="Manage"
+                            Style="{StaticResource NavButtonStyle}"
+                            Padding="14,10" Margin="0,2" FontSize="13"
+                            HorizontalContentAlignment="Left"
+                            Click="NavButton_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🗂️" Margin="0,0,10,0" FontSize="14"/>
+                            <TextBlock Text="管理" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>

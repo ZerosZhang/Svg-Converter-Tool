@@ -1,0 +1,172 @@
+<UserControl x:Class="SvgConverterTool.Views.ManageView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style x:Key="ToolButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#F5F5F5"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E8E8E8"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#D0D0D0"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.45"/>
+                    <Setter Property="Cursor" Value="Arrow"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- 页面标题 -->
+        <Border Grid.Row="0" Background="White" BorderBrush="#DDD" BorderThickness="0,0,0,1" Padding="14,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="管理工具" FontSize="15" FontWeight="SemiBold" Foreground="#333"/>
+                    <TextBlock Text="对 Output 目录中的图标进行批量整理" FontSize="12" Foreground="#888" Margin="0,3,0,0"/>
+                </StackPanel>
+                <TextBlock x:Name="TxtStatus" Grid.Column="1" VerticalAlignment="Center"
+                           HorizontalAlignment="Right" FontSize="13" Foreground="#666"/>
+            </Grid>
+        </Border>
+
+        <!-- 管理功能分区，后续功能可继续追加 -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="10">
+            <StackPanel x:Name="SectionsPanel">
+
+                <!-- 分区：数据清理 -->
+                <Border Background="White" BorderBrush="#E8E8E8" BorderThickness="1" CornerRadius="8"
+                        Margin="8" Padding="16">
+                    <StackPanel>
+                        <Grid>                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                <TextBlock Text="🧹 重复图标清理" FontSize="14" FontWeight="SemiBold" Foreground="#333"/>
+                                <TextBlock Text="按 SVG 内容识别重复图标，每组保留创建时间最新的一份；删除后不可恢复。"
+                                           FontSize="12" Foreground="#777" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
+                                <Button x:Name="BtnScan" Content="扫描重复数据" Style="{StaticResource ToolButtonStyle}"
+                                        Click="BtnScan_Click"/>
+                                <Button x:Name="BtnDelete" Content="删除重复项" Style="{StaticResource ToolButtonStyle}"
+                                        Margin="10,0,0,0" IsEnabled="False" Click="BtnDelete_Click"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Border Height="1" Background="#F0F0F0" Margin="0,14,0,0"/>
+
+                        <ItemsControl x:Name="ItemsGroups" Margin="0,6,0,0">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="#E8E8E8" BorderThickness="1" CornerRadius="8"
+                                            Margin="0,8,16,0" Padding="14" Width="360" Background="White">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border BorderBrush="#F0F0F0" BorderThickness="1" Background="#FAFAFA"
+                                                    Width="88" Height="88" CornerRadius="8" VerticalAlignment="Center">
+                                                <Image Source="{Binding PreviewImage}"
+                                                       Width="72" Height="72" Stretch="Uniform"/>
+                                            </Border>
+                                            <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+                                                <TextBlock Text="保留" FontSize="11" Foreground="#2E9E4F"/>
+                                                <TextBlock Text="{Binding KeptName}"
+                                                           FontSize="13" FontWeight="SemiBold"
+                                                           Foreground="#333" TextTrimming="CharacterEllipsis"
+                                                           ToolTip="{Binding KeptName}"/>
+                                                <TextBlock Text="{Binding DuplicateCountText}"
+                                                           FontSize="11" Foreground="#E5722F" Margin="0,8,0,0"/>
+                                                <TextBlock Text="{Binding DuplicateSummary}"
+                                                           FontSize="11" Foreground="#777" TextWrapping="Wrap"
+                                                           ToolTip="{Binding DuplicateSummary}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <!-- 分区：输出目录 -->
+                <Border Background="White" BorderBrush="#E8E8E8" BorderThickness="1" CornerRadius="8"
+                        Margin="8,0,8,8" Padding="16">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                            <TextBlock Text="📂 输出目录" FontSize="14" FontWeight="SemiBold" Foreground="#333"/>
+                            <TextBlock Text="所有转换结果统一保存在程序目录下的 Output 文件夹中。"
+                                       FontSize="12" Foreground="#777" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <Button Grid.Column="1" Content="打开输出目录" Style="{StaticResource ToolButtonStyle}"
+                                VerticalAlignment="Center" Margin="12,0,0,0" Click="BtnOpenOutput_Click"/>
+                    </Grid>
+                </Border>
+
+                <!-- 分区：图标资源 -->
+                <Border Background="White" BorderBrush="#E8E8E8" BorderThickness="1" CornerRadius="8"
+                        Margin="8,0,8,8" Padding="16">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                            <TextBlock Text="🌐 图标资源" FontSize="14" FontWeight="SemiBold" Foreground="#333"/>
+                            <TextBlock Text="在默认浏览器中打开阿里巴巴矢量图标库，搜索并下载 SVG 图标。"
+                                       FontSize="12" Foreground="#777" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <Button Grid.Column="1" Content="矢量库" Style="{StaticResource ToolButtonStyle}"
+                                VerticalAlignment="Center" Margin="12,0,0,0" Click="BtnOpenIconFont_Click"/>
+                    </Grid>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
