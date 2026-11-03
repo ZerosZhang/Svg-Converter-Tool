@@ -3,9 +3,122 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:views="clr-namespace:SvgConverterTool.Views"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <!-- 格式按钮：圆角小标签 -->
+        <Style x:Key="FormatChipStyle" TargetType="Button">
+            <Setter Property="Width" Value="52"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Margin" Value="0,0,5,0"/>
+            <Setter Property="FontSize" Value="10.5"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.82"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Opacity" Value="0.65"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.3"/>
+                    <Setter Property="Cursor" Value="Arrow"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- 行内可编辑的备注框：平时像普通文本，获得焦点才显示边框 -->
+        <Style x:Key="RowDescriptionStyle" TargetType="TextBox">
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="6,3"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="#555"/>
+            <Setter Property="ToolTip" Value="填写这个图标的用途，失焦自动保存"/>
+            <Style.Triggers>
+                <Trigger Property="IsKeyboardFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#90CAF9"/>
+                    <Setter Property="Background" Value="White"/>
+                    <Setter Property="Foreground" Value="#222"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- 行内重命名输入框 -->
+        <Style x:Key="RowRenameBoxStyle" TargetType="TextBox">
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="#90CAF9"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="3,1"/>
+        </Style>
+
+        <!-- 表头：扁平、无拖拽手柄 -->
+        <Style x:Key="ColumnHeaderStyle" TargetType="GridViewColumnHeader">
+            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#6B7280"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GridViewColumnHeader">
+                        <Border Background="#F7F8FA" BorderBrush="#ECEDF0" BorderThickness="0,0,0,1"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 行：悬停高亮、选中浅蓝、细分割线 -->
+        <Style x:Key="RowStyle" TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Border x:Name="RowBorder" Background="Transparent"
+                                BorderBrush="#F2F3F5" BorderThickness="0,0,0,1"
+                                Padding="0,7">
+                            <GridViewRowPresenter
+                                Columns="{Binding View.Columns, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                <Setter TargetName="RowBorder" Property="Background" Value="#FCFCFD"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="RowBorder" Property="Background" Value="#F5F9FF"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="RowBorder" Property="Background" Value="#EAF2FE"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -35,24 +148,137 @@
 
         <!-- 提示信息 -->
         <Border Grid.Row="1" Background="#FFF3E0" BorderBrush="#FFCC80" BorderThickness="0,0,0,1" Padding="10">
-            <TextBlock Text="💡 输入图标名称即可搜索 Output 目录，点击按钮复制对应格式，点击文件名可重命名"
+            <TextBlock Text="💡 搜索图标名称或备注；点击名称可重命名，点击备注可填写用途"
                        Foreground="#E65100" FontSize="12"/>
         </Border>
 
-        <!-- 结果列表 -->
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="10">
-            <ItemsControl x:Name="ItemsResults">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <views:IconCard Message="IconCard_Message"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+        <!-- 结果列表：每行一个图标，ListView 自带行虚拟化 -->
+        <Border Grid.Row="2" Margin="10" Background="White"
+                BorderBrush="#E6E7EB" BorderThickness="1" CornerRadius="8">
+            <ListView x:Name="ListResults"
+                      BorderThickness="0" Background="Transparent"
+                      AlternationCount="2"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      VirtualizingStackPanel.VirtualizationMode="Recycling"
+                      ItemContainerStyle="{StaticResource RowStyle}"
+                      SizeChanged="ListResults_SizeChanged">
+                <ListView.Resources>
+                    <Style TargetType="GridViewColumnHeader" BasedOn="{StaticResource ColumnHeaderStyle}"/>
+                </ListView.Resources>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="图标" Width="84">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border Width="44" Height="44" Background="#FAFAFA" BorderBrush="#F0F0F0"
+                                            BorderThickness="1" CornerRadius="7" Margin="8,0">
+                                        <Image Source="{Binding PreviewImage}" Width="34" Height="34" Stretch="Uniform"/>
+                                    </Border>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <GridViewColumn Header="名称" Width="170">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="8,0">
+                                        <TextBlock Text="{Binding FileName}"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   VerticalAlignment="Center"
+                                                   FontSize="12.5"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#333"
+                                                   Cursor="IBeam"
+                                                   ToolTip="点击重命名"
+                                                   MouseLeftButtonUp="FileName_MouseLeftButtonUp"/>
+                                        <TextBox x:Name="TxtRename"
+                                                 Style="{StaticResource RowRenameBoxStyle}"
+                                                 KeyDown="RenameBox_KeyDown"
+                                                 LostFocus="RenameBox_LostFocus"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <GridViewColumn Header="分组" Width="120">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock VerticalAlignment="Center"
+                                               FontSize="12"
+                                               TextTrimming="CharacterEllipsis" Margin="8,0">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text" Value="{Binding Group}"/>
+                                                <Setter Property="Foreground" Value="#7A7F87"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Group}" Value="">
+                                                        <Setter Property="Text" Value="（默认）"/>
+                                                        <Setter Property="Foreground" Value="#BDBDBD"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <GridViewColumn Header="格式" Width="300">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="8,0">
+                                        <Button Content="XAML" Style="{StaticResource FormatChipStyle}"
+                                                Background="#EAF2FE" Foreground="#1D6FE0"
+                                                Tag="{Binding XamlPath}" IsEnabled="{Binding HasXaml}"
+                                                ToolTip="复制 XAML 文本" Click="BtnCopyFormat_Click"/>
+                                        <Button Content="SVG" Style="{StaticResource FormatChipStyle}"
+                                                Background="#FFF1E6" Foreground="#E5722F"
+                                                Tag="{Binding SvgPath}" IsEnabled="{Binding HasSvg}"
+                                                ToolTip="复制 SVG 文件" Click="BtnCopyFormat_Click"/>
+                                        <Button Content="PNG" Style="{StaticResource FormatChipStyle}"
+                                                Background="#EAF7EC" Foreground="#2E9E4F"
+                                                Tag="{Binding PngPath}" IsEnabled="{Binding HasPng}"
+                                                ToolTip="复制 PNG 图片" Click="BtnCopyFormat_Click"/>
+                                        <Button Content="ICO" Style="{StaticResource FormatChipStyle}"
+                                                Background="#F4EDFB" Foreground="#7A4FC0"
+                                                Tag="{Binding IcoPath}" IsEnabled="{Binding HasIco}"
+                                                ToolTip="复制 ICO 文件" Click="BtnCopyFormat_Click"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <GridViewColumn x:Name="DescriptionColumn" Header="描述" Width="340">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <TextBlock Text="填写这个图标的用途…"
+                                                   FontSize="12" Foreground="#C6C8CC"
+                                                   VerticalAlignment="Center" Margin="9,0,0,0"
+                                                   IsHitTestVisible="False">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Description}" Value="">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                                                 Style="{StaticResource RowDescriptionStyle}"
+                                                 Margin="4,0,8,0"
+                                                 LostFocus="DescriptionBox_LostFocus"
+                                                 KeyDown="DescriptionBox_KeyDown"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Border>
     </Grid>
 </UserControl>

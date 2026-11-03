@@ -52,15 +52,18 @@ namespace SvgConverterTool.Helpers
 
             try
             {
+                // 子目录中的图标按自身所在目录改名，根目录图标沿用传入的 Output 目录
+                string folder = string.IsNullOrEmpty(item.FolderPath) ? outputDirectory : item.FolderPath;
+
                 bool hasConflict = Extensions.Any(ext =>
-                    File.Exists(Path.Combine(outputDirectory, newName + ext)));
+                    File.Exists(Path.Combine(folder, newName + ext)));
 
                 if (hasConflict)
                 {
                     var dialog = new RenameConflictDialog(
                         newName,
                         item.PreviewImage,
-                        PreviewHelper.LoadPng(Path.Combine(outputDirectory, newName + ".png")))
+                        PreviewHelper.LoadPng(Path.Combine(folder, newName + ".png")))
                     {
                         Owner = owner
                     };
@@ -69,13 +72,13 @@ namespace SvgConverterTool.Helpers
                     switch (dialog.Action)
                     {
                         case RenameConflictAction.Overwrite:
-                            RenameFiles(outputDirectory, item.FileName, newName, overwrite: true);
-                            ApplyPaths(outputDirectory, item, newName);
+                            RenameFiles(folder, item.FileName, newName, overwrite: true);
+                            ApplyPaths(folder, item, newName);
                             return RenameResult.Renamed;
                         case RenameConflictAction.AddSuffix:
-                            newName = GetAvailableName(outputDirectory, newName);
-                            RenameFiles(outputDirectory, item.FileName, newName, overwrite: false);
-                            ApplyPaths(outputDirectory, item, newName);
+                            newName = GetAvailableName(folder, newName);
+                            RenameFiles(folder, item.FileName, newName, overwrite: false);
+                            ApplyPaths(folder, item, newName);
                             return RenameResult.Renamed;
                         case RenameConflictAction.Retry:
                             return RenameResult.Retry;
@@ -84,8 +87,8 @@ namespace SvgConverterTool.Helpers
                     }
                 }
 
-                RenameFiles(outputDirectory, item.FileName, newName, overwrite: false);
-                ApplyPaths(outputDirectory, item, newName);
+                RenameFiles(folder, item.FileName, newName, overwrite: false);
+                ApplyPaths(folder, item, newName);
                 return RenameResult.Renamed;
             }
             catch (Exception ex)
