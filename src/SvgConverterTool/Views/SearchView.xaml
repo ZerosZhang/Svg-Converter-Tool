@@ -39,7 +39,7 @@
             </Style.Triggers>
         </Style>
 
-        <!-- 行内可编辑的备注框：平时像普通文本，获得焦点才显示边框 -->
+        <!-- 行内可编辑的描述框：平时像普通文本，获得焦点才显示边框 -->
         <Style x:Key="RowDescriptionStyle" TargetType="TextBox">
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
@@ -148,7 +148,7 @@
 
         <!-- 提示信息 -->
         <Border Grid.Row="1" Background="#FFF3E0" BorderBrush="#FFCC80" BorderThickness="0,0,0,1" Padding="10">
-            <TextBlock Text="💡 搜索图标名称或备注；点击名称可重命名，点击备注可填写用途"
+            <TextBlock Text="💡 搜索图标名称或描述；点击名称可重命名，点击描述可填写用途"
                        Foreground="#E65100" FontSize="12"/>
         </Border>
 
@@ -178,83 +178,96 @@
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
 
-                        <GridViewColumn Header="名称" Width="170">
+                        <!-- 分组标签在上、名称在下 -->
+                        <GridViewColumn Header="分组 / 名称" Width="200">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Grid Margin="8,0">
-                                        <TextBlock Text="{Binding FileName}"
-                                                   TextTrimming="CharacterEllipsis"
-                                                   VerticalAlignment="Center"
-                                                   FontSize="12.5"
-                                                   FontWeight="SemiBold"
-                                                   Foreground="#333"
-                                                   Cursor="IBeam"
-                                                   ToolTip="点击重命名"
-                                                   MouseLeftButtonUp="FileName_MouseLeftButtonUp"/>
-                                        <TextBox x:Name="TxtRename"
-                                                 Style="{StaticResource RowRenameBoxStyle}"
-                                                 KeyDown="RenameBox_KeyDown"
-                                                 LostFocus="RenameBox_LostFocus"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
+                                    <StackPanel Margin="8,0">
+                                        <Border Background="#E4E7EC" CornerRadius="4" Padding="6,1"
+                                                HorizontalAlignment="Left" MaxWidth="170" Margin="0,0,0,4"
+                                                ToolTip="{Binding Group}">
+                                            <TextBlock FontSize="10.5" TextTrimming="CharacterEllipsis">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Text" Value="{Binding Group}"/>
+                                                        <Setter Property="Foreground" Value="#4B5563"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Group}" Value="">
+                                                                <Setter Property="Text" Value="默认分组"/>
+                                                                <Setter Property="Foreground" Value="#8A919C"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Border>
 
-                        <GridViewColumn Header="分组" Width="120">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock VerticalAlignment="Center"
-                                               FontSize="12"
-                                               TextTrimming="CharacterEllipsis" Margin="8,0">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Text" Value="{Binding Group}"/>
-                                                <Setter Property="Foreground" Value="#7A7F87"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Group}" Value="">
-                                                        <Setter Property="Text" Value="（默认）"/>
-                                                        <Setter Property="Foreground" Value="#BDBDBD"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-
-                        <GridViewColumn Header="格式" Width="300">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" Margin="8,0">
-                                        <Button Content="XAML" Style="{StaticResource FormatChipStyle}"
-                                                Background="#EAF2FE" Foreground="#1D6FE0"
-                                                Tag="{Binding XamlPath}" IsEnabled="{Binding HasXaml}"
-                                                ToolTip="复制 XAML 文本" Click="BtnCopyFormat_Click"/>
-                                        <Button Content="SVG" Style="{StaticResource FormatChipStyle}"
-                                                Background="#FFF1E6" Foreground="#E5722F"
-                                                Tag="{Binding SvgPath}" IsEnabled="{Binding HasSvg}"
-                                                ToolTip="复制 SVG 文件" Click="BtnCopyFormat_Click"/>
-                                        <Button Content="PNG" Style="{StaticResource FormatChipStyle}"
-                                                Background="#EAF7EC" Foreground="#2E9E4F"
-                                                Tag="{Binding PngPath}" IsEnabled="{Binding HasPng}"
-                                                ToolTip="复制 PNG 图片" Click="BtnCopyFormat_Click"/>
-                                        <Button Content="ICO" Style="{StaticResource FormatChipStyle}"
-                                                Background="#F4EDFB" Foreground="#7A4FC0"
-                                                Tag="{Binding IcoPath}" IsEnabled="{Binding HasIco}"
-                                                ToolTip="复制 ICO 文件" Click="BtnCopyFormat_Click"/>
+                                        <Grid>
+                                            <TextBlock Text="{Binding FileName}"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="12.5"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="#333"
+                                                       Cursor="IBeam"
+                                                       ToolTip="点击重命名"
+                                                       MouseLeftButtonUp="FileName_MouseLeftButtonUp"/>
+                                            <TextBox x:Name="TxtRename"
+                                                     Style="{StaticResource RowRenameBoxStyle}"
+                                                     KeyDown="RenameBox_KeyDown"
+                                                     LostFocus="RenameBox_LostFocus"/>
+                                        </Grid>
                                     </StackPanel>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
 
-                        <GridViewColumn x:Name="DescriptionColumn" Header="描述" Width="340">
+                        <!-- 格式：2×2 标签 -->
+                        <GridViewColumn Header="格式" Width="150">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Grid>
+                                    <Grid Margin="8,0" HorizontalAlignment="Left">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Button Grid.Row="0" Grid.Column="0" Content="XAML"
+                                                Style="{StaticResource FormatChipStyle}" Margin="0"
+                                                Background="#D3E4FD" Foreground="#1A5FCB"
+                                                Tag="{Binding XamlPath}" IsEnabled="{Binding HasXaml}"
+                                                ToolTip="复制 XAML 文本" Click="BtnCopyFormat_Click"/>
+                                        <Button Grid.Row="0" Grid.Column="1" Content="SVG"
+                                                Style="{StaticResource FormatChipStyle}" Margin="5,0,0,0"
+                                                Background="#FFDFC4" Foreground="#C85F1F"
+                                                Tag="{Binding SvgPath}" IsEnabled="{Binding HasSvg}"
+                                                ToolTip="复制 SVG 文件" Click="BtnCopyFormat_Click"/>
+                                        <Button Grid.Row="1" Grid.Column="0" Content="PNG"
+                                                Style="{StaticResource FormatChipStyle}" Margin="0,5,0,0"
+                                                Background="#D3EFD9" Foreground="#24803F"
+                                                Tag="{Binding PngPath}" IsEnabled="{Binding HasPng}"
+                                                ToolTip="复制 PNG 图片" Click="BtnCopyFormat_Click"/>
+                                        <Button Grid.Row="1" Grid.Column="1" Content="ICO"
+                                                Style="{StaticResource FormatChipStyle}" Margin="5,5,0,0"
+                                                Background="#E6D8F9" Foreground="#6A3EB0"
+                                                Tag="{Binding IcoPath}" IsEnabled="{Binding HasIco}"
+                                                ToolTip="复制 ICO 文件" Click="BtnCopyFormat_Click"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <!-- 描述 -->
+                        <GridViewColumn x:Name="DetailColumn" Header="描述" Width="340">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="8,0">
                                         <TextBlock Text="填写这个图标的用途…"
                                                    FontSize="12" Foreground="#C6C8CC"
-                                                   VerticalAlignment="Center" Margin="9,0,0,0"
+                                                   VerticalAlignment="Center" Margin="7,0,0,0"
                                                    IsHitTestVisible="False">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
@@ -269,7 +282,7 @@
                                         </TextBlock>
                                         <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
                                                  Style="{StaticResource RowDescriptionStyle}"
-                                                 Margin="4,0,8,0"
+                                                 VerticalAlignment="Center"
                                                  LostFocus="DescriptionBox_LostFocus"
                                                  KeyDown="DescriptionBox_KeyDown"/>
                                     </Grid>

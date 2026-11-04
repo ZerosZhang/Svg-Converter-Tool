@@ -15,14 +15,14 @@ using System.Windows.Media;
 namespace SvgConverterTool.Views
 {
     /// <summary>
-    /// 图标搜索视图：一行一个图标，含名称、分组、格式与备注
+    /// 图标搜索视图：一行一个图标，含名称、分组、格式与描述
     /// </summary>
     public partial class SearchView : UserControl
     {
         private static readonly string[] Extensions = { ".xaml", ".svg", ".png", ".ico" };
 
         /// <summary>描述列之外各列宽度之和，用于自适应描述列</summary>
-        private const double FixedColumnWidth = 84 + 170 + 120 + 300;
+        private const double FixedColumnWidth = 84 + 200 + 150;
 
         private readonly ObservableCollection<IconItem> _results = new();
         private readonly string _outputDirectory;
@@ -56,7 +56,7 @@ namespace SvgConverterTool.Views
         }
 
         /// <summary>
-        /// 扫描 Output 目录（含子目录），按名称或备注过滤后展示
+        /// 扫描 Output 目录（含子目录），按名称或描述过滤后展示
         /// </summary>
         private void RefreshResults()
         {
@@ -86,7 +86,7 @@ namespace SvgConverterTool.Views
         }
 
         /// <summary>
-        /// 名称或备注命中关键字
+        /// 名称或描述命中关键字
         /// </summary>
         private static bool Matches(IconItem item, string keyword)
         {
@@ -225,7 +225,7 @@ namespace SvgConverterTool.Views
         }
 
         /// <summary>
-        /// 提交重命名，成功后同步迁移备注键
+        /// 提交重命名，成功后同步迁移描述键
         /// </summary>
         private void CommitRename(TextBox editor)
         {
@@ -285,7 +285,7 @@ namespace SvgConverterTool.Views
         }
 
         /// <summary>
-        /// 备注失焦时写入 descriptions.json
+        /// 描述失焦时写入 descriptions.json
         /// </summary>
         private void DescriptionBox_LostFocus(object sender, RoutedEventArgs e)
         {
@@ -296,7 +296,7 @@ namespace SvgConverterTool.Views
         }
 
         /// <summary>
-        /// 备注输入框回车结束编辑
+        /// 描述输入框回车结束编辑
         /// </summary>
         private void DescriptionBox_KeyDown(object sender, KeyEventArgs e)
         {
@@ -335,11 +335,11 @@ namespace SvgConverterTool.Views
         }
 
         /// <summary>
-        /// 描述列占满剩余宽度
+        /// 分组/描述列占满剩余宽度
         /// </summary>
         private void ListResults_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            DescriptionColumn.Width = Math.Max(220, e.NewSize.Width - FixedColumnWidth - 24);
+            DetailColumn.Width = Math.Max(260, e.NewSize.Width - FixedColumnWidth - 24);
         }
     }
 }
