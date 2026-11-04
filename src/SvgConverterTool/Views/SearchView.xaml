@@ -39,6 +39,171 @@
             </Style.Triggers>
         </Style>
 
+        <!-- 圆角输入框：搜索框等普通输入 -->
+        <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#D5D9E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="#333"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <Grid>
+                                <TextBlock x:Name="Watermark" Text="{TemplateBinding Tag}"
+                                           Margin="{TemplateBinding Padding}"
+                                           VerticalAlignment="Center"
+                                           Foreground="#B3B8C2"
+                                           IsHitTestVisible="False"
+                                           Visibility="Collapsed"/>
+                                <ScrollViewer x:Name="PART_ContentHost" Focusable="False"
+                                              HorizontalScrollBarVisibility="Hidden"
+                                              VerticalScrollBarVisibility="Hidden"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Text" Value="">
+                                <Setter TargetName="Watermark" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#B9C2CE"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#90CAF9"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.55"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 圆角下拉框：白底细边框、自绘箭头、圆角弹出列表 -->
+        <Style x:Key="RoundedComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#D5D9E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,0"/>
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="Foreground" Value="#333"/>
+            <Setter Property="MaxDropDownHeight" Value="260"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="ComboBoxItem">
+                        <Setter Property="Padding" Value="8,5"/>
+                        <Setter Property="FontSize" Value="12.5"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ComboBoxItem">
+                                    <Border x:Name="ItemBd" Background="Transparent" CornerRadius="4"
+                                            Margin="3,1" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsHighlighted" Value="True">
+                                            <Setter TargetName="ItemBd" Property="Background" Value="#EDF4FE"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="ItemBd" Property="Background" Value="#E3EEFD"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="6">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ContentPresenter x:Name="ContentSite" Grid.Column="0"
+                                                      Content="{TemplateBinding SelectionBoxItem}"
+                                                      ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                      ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                                      Margin="{TemplateBinding Padding}"
+                                                      VerticalAlignment="Center"
+                                                      IsHitTestVisible="False"/>
+                                    <TextBox x:Name="PART_EditableTextBox" Grid.Column="0"
+                                             Background="Transparent" BorderThickness="0"
+                                             Margin="{TemplateBinding Padding}"
+                                             FontSize="{TemplateBinding FontSize}"
+                                             Foreground="{TemplateBinding Foreground}"
+                                             VerticalContentAlignment="Center"
+                                             HorizontalScrollBarVisibility="Hidden"
+                                             VerticalScrollBarVisibility="Hidden"
+                                             Visibility="Collapsed"/>
+                                    <ToggleButton x:Name="ToggleButton" Grid.Column="1"
+                                                  Focusable="False" ClickMode="Press"
+                                                  Background="Transparent" BorderThickness="0"
+                                                  Cursor="Hand"
+                                                  IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                        <ToggleButton.Template>
+                                            <ControlTemplate TargetType="ToggleButton">
+                                                <Border Background="Transparent" Width="28">
+                                                    <Path Data="M0,0 L4,4 L8,0" Stroke="#9AA0A8"
+                                                          StrokeThickness="1.4"
+                                                          HorizontalAlignment="Center"
+                                                          VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </ToggleButton.Template>
+                                    </ToggleButton>
+                                </Grid>
+                            </Border>
+                            <Popup x:Name="PART_Popup" Placement="Bottom"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True" Focusable="False"
+                                   PopupAnimation="Fade">
+                                <Border Margin="0,4,0,0" Background="White"
+                                        BorderBrush="#E3E6EB" BorderThickness="1"
+                                        CornerRadius="6"
+                                        MinWidth="{TemplateBinding ActualWidth}"
+                                        MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <ScrollViewer Margin="0,3">
+                                        <ItemsPresenter/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEditable" Value="True">
+                                <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="ContentSite" Property="Visibility" Value="Collapsed"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#B9C2CE"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#90CAF9"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.55"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!-- 行内可编辑的描述框：平时像普通文本，获得焦点才显示边框 -->
         <Style x:Key="RowDescriptionStyle" TargetType="TextBox">
             <Setter Property="BorderThickness" Value="1"/>
@@ -49,6 +214,20 @@
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Foreground" Value="#555"/>
             <Setter Property="ToolTip" Value="填写这个图标的用途，失焦自动保存"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ScrollViewer x:Name="PART_ContentHost" Focusable="False"
+                                          HorizontalScrollBarVisibility="Hidden"
+                                          VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
             <Style.Triggers>
                 <Trigger Property="IsKeyboardFocused" Value="True">
                     <Setter Property="BorderBrush" Value="#90CAF9"/>
@@ -63,9 +242,24 @@
             <Setter Property="Visibility" Value="Collapsed"/>
             <Setter Property="FontSize" Value="12.5"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="White"/>
             <Setter Property="BorderBrush" Value="#90CAF9"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="3,1"/>
+            <Setter Property="Padding" Value="5,1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ScrollViewer x:Name="PART_ContentHost" Focusable="False"
+                                          HorizontalScrollBarVisibility="Hidden"
+                                          VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <!-- 表头：扁平、无拖拽手柄 -->
@@ -136,10 +330,14 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0" Orientation="Horizontal">
-                    <TextBox x:Name="TxtSearch" Width="260" Padding="8,6" FontSize="13"
-                             VerticalContentAlignment="Center"
-                             BorderBrush="#CCCCCC" BorderThickness="1"
+                    <TextBox x:Name="TxtSearch" Style="{StaticResource RoundedTextBoxStyle}"
+                             Width="260" Height="32"
+                             Tag="搜索名称、分组或描述"
                              TextChanged="TxtSearch_TextChanged"/>
+                    <ComboBox x:Name="CmbGroup" Style="{StaticResource RoundedComboBoxStyle}"
+                              Width="180" Height="32" Margin="8,0,0,0"
+                              ToolTip="按分组筛选"
+                              SelectionChanged="CmbGroup_SelectionChanged"/>
                 </StackPanel>
                 <TextBlock x:Name="TxtStatus" Grid.Column="2" VerticalAlignment="Center"
                            HorizontalAlignment="Right" FontSize="13" Foreground="#666"/>
@@ -148,7 +346,7 @@
 
         <!-- 提示信息 -->
         <Border Grid.Row="1" Background="#FFF3E0" BorderBrush="#FFCC80" BorderThickness="0,0,0,1" Padding="10">
-            <TextBlock Text="💡 搜索图标名称或描述；点击名称可重命名，点击描述可填写用途"
+            <TextBlock Text="💡 搜索图标名称、分组或描述；点击名称可重命名，点击分组标签可移动分组，点击描述可填写用途"
                        Foreground="#E65100" FontSize="12"/>
         </Border>
 
@@ -183,24 +381,35 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Margin="8,0">
-                                        <Border Background="#E4E7EC" CornerRadius="4" Padding="6,1"
-                                                HorizontalAlignment="Left" MaxWidth="170" Margin="0,0,0,4"
-                                                ToolTip="{Binding Group}">
-                                            <TextBlock FontSize="10.5" TextTrimming="CharacterEllipsis">
-                                                <TextBlock.Style>
-                                                    <Style TargetType="TextBlock">
-                                                        <Setter Property="Text" Value="{Binding Group}"/>
-                                                        <Setter Property="Foreground" Value="#4B5563"/>
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding Group}" Value="">
-                                                                <Setter Property="Text" Value="默认分组"/>
-                                                                <Setter Property="Foreground" Value="#8A919C"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </TextBlock.Style>
-                                            </TextBlock>
-                                        </Border>
+                                        <Grid HorizontalAlignment="Left" MaxWidth="170" Margin="0,0,0,4">
+                                            <Border x:Name="GroupTag" Background="#E4E7EC" CornerRadius="4" Padding="6,1"
+                                                    Cursor="Hand"
+                                                    ToolTip="点击修改分组，回车确认"
+                                                    MouseLeftButtonUp="GroupTag_MouseLeftButtonUp">
+                                                <TextBlock FontSize="10.5" TextTrimming="CharacterEllipsis">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Text" Value="{Binding Group}"/>
+                                                            <Setter Property="Foreground" Value="#4B5563"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Group}" Value="">
+                                                                    <Setter Property="Text" Value="默认分组"/>
+                                                                    <Setter Property="Foreground" Value="#8A919C"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Border>
+                                            <ComboBox x:Name="CmbGroupEdit" Visibility="Collapsed"
+                                                      Style="{StaticResource RoundedComboBoxStyle}"
+                                                      Width="150" Height="26" FontSize="11.5"
+                                                      Padding="6,0" IsEditable="True" MaxDropDownHeight="240"
+                                                      BorderBrush="#90CAF9" BorderThickness="1"
+                                                      ItemsSource="{Binding GroupChoices, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                      KeyDown="GroupBox_KeyDown"
+                                                      LostFocus="GroupBox_LostFocus"/>
+                                        </Grid>
 
                                         <Grid>
                                             <TextBlock Text="{Binding FileName}"
